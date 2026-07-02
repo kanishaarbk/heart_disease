@@ -13,23 +13,101 @@ st.set_page_config(
 )
 
 st.title("❤️ Heart Disease Prediction")
-st.write("Enter the patient's details below.")
+st.write("Fill in the patient's details below.")
 
+# Numeric Inputs
 age = st.number_input("Age", min_value=1, max_value=120, value=45)
-sex = st.selectbox("Sex", [0, 1], help="0 = Female, 1 = Male")
-cp = st.selectbox("Chest Pain Type (cp)", [0, 1, 2, 3])
-trestbps = st.number_input("Resting Blood Pressure", value=120)
-chol = st.number_input("Cholesterol", value=200)
-fbs = st.selectbox("Fasting Blood Sugar > 120 mg/dl", [0, 1])
-restecg = st.selectbox("Resting ECG", [0, 1, 2])
-thalach = st.number_input("Maximum Heart Rate", value=150)
-exang = st.selectbox("Exercise Induced Angina", [0, 1])
-oldpeak = st.number_input("Oldpeak", value=1.0, step=0.1)
-slope = st.selectbox("Slope", [0, 1, 2])
-ca = st.selectbox("Number of Major Vessels (ca)", [0, 1, 2, 3, 4])
-thal = st.selectbox("Thal", [0, 1, 2, 3])
+trestbps = st.number_input("Resting Blood Pressure (mm Hg)", value=120)
+chol = st.number_input("Serum Cholesterol (mg/dl)", value=200)
+thalach = st.number_input("Maximum Heart Rate Achieved", value=150)
+oldpeak = st.number_input("ST Depression (Oldpeak)", min_value=0.0, step=0.1)
 
-if st.button("Predict"):
+# Categorical Inputs
+sex_option = st.selectbox("Sex", ["Female", "Male"])
+sex = 0 if sex_option == "Female" else 1
+
+cp_option = st.selectbox(
+    "Chest Pain Type",
+    [
+        "Typical Angina",
+        "Atypical Angina",
+        "Non-anginal Pain",
+        "Asymptomatic"
+    ]
+)
+cp = {
+    "Typical Angina": 0,
+    "Atypical Angina": 1,
+    "Non-anginal Pain": 2,
+    "Asymptomatic": 3
+}[cp_option]
+
+fbs_option = st.selectbox(
+    "Fasting Blood Sugar",
+    [
+        "≤ 120 mg/dl",
+        "> 120 mg/dl"
+    ]
+)
+fbs = 0 if fbs_option == "≤ 120 mg/dl" else 1
+
+restecg_option = st.selectbox(
+    "Resting ECG",
+    [
+        "Normal",
+        "ST-T Wave Abnormality",
+        "Left Ventricular Hypertrophy"
+    ]
+)
+restecg = {
+    "Normal": 0,
+    "ST-T Wave Abnormality": 1,
+    "Left Ventricular Hypertrophy": 2
+}[restecg_option]
+
+exang_option = st.selectbox(
+    "Exercise Induced Angina",
+    [
+        "No",
+        "Yes"
+    ]
+)
+exang = 0 if exang_option == "No" else 1
+
+slope_option = st.selectbox(
+    "ST Segment Slope",
+    [
+        "Upsloping",
+        "Flat",
+        "Downsloping"
+    ]
+)
+slope = {
+    "Upsloping": 0,
+    "Flat": 1,
+    "Downsloping": 2
+}[slope_option]
+
+ca = st.selectbox(
+    "Number of Major Vessels",
+    [0, 1, 2, 3, 4]
+)
+
+thal_option = st.selectbox(
+    "Thalassemia",
+    [
+        "Normal",
+        "Fixed Defect",
+        "Reversible Defect"
+    ]
+)
+thal = {
+    "Normal": 1,
+    "Fixed Defect": 2,
+    "Reversible Defect": 3
+}[thal_option]
+
+if st.button("🔍 Predict"):
 
     input_data = pd.DataFrame([[
         age,
@@ -70,5 +148,5 @@ if st.button("Predict"):
 
     if hasattr(model, "predict_proba"):
         probability = model.predict_proba(input_data)[0]
-        st.write(f"**No Heart Disease:** {probability[0]*100:.2f}%")
-        st.write(f"**Heart Disease:** {probability[1]*100:.2f}%")
+        st.write(f"**Probability of No Heart Disease:** {probability[0]*100:.2f}%")
+        st.write(f"**Probability of Heart Disease:** {probability[1]*100:.2f}%")
