@@ -15,15 +15,45 @@ st.set_page_config(
 st.title("❤️ Heart Disease Prediction")
 st.write("Fill in the patient's details below.")
 
-# Numeric Inputs
-age = st.number_input("Age", min_value=1, max_value=120, value=45)
-trestbps = st.number_input("Resting Blood Pressure (mm Hg)", value=120)
-chol = st.number_input("Serum Cholesterol (mg/dl)", value=200)
-thalach = st.number_input("Maximum Heart Rate Achieved", value=150)
-oldpeak = st.number_input("ST Depression (Oldpeak)", min_value=0.0, step=0.1)
+# ---------------- Numeric Inputs ---------------- #
 
-# Categorical Inputs
-sex_option = st.selectbox("Sex", ["Female", "Male"])
+age = st.number_input("Age", min_value=1, max_value=120, value=45)
+
+trestbps = st.number_input(
+    "Resting Blood Pressure (mm Hg)",
+    min_value=80,
+    max_value=250,
+    value=120
+)
+
+chol = st.number_input(
+    "Serum Cholesterol (mg/dl)",
+    min_value=100,
+    max_value=600,
+    value=200
+)
+
+thalach = st.number_input(
+    "Maximum Heart Rate Achieved",
+    min_value=60,
+    max_value=220,
+    value=150
+)
+
+oldpeak = st.number_input(
+    "ST Depression (Oldpeak)",
+    min_value=0.0,
+    max_value=10.0,
+    value=0.0,
+    step=0.1
+)
+
+# ---------------- Categorical Inputs ---------------- #
+
+sex_option = st.selectbox(
+    "Sex",
+    ["Female", "Male"]
+)
 sex = 0 if sex_option == "Female" else 1
 
 cp_option = st.selectbox(
@@ -35,6 +65,7 @@ cp_option = st.selectbox(
         "Asymptomatic"
     ]
 )
+
 cp = {
     "Typical Angina": 0,
     "Atypical Angina": 1,
@@ -49,6 +80,7 @@ fbs_option = st.selectbox(
         "> 120 mg/dl"
     ]
 )
+
 fbs = 0 if fbs_option == "≤ 120 mg/dl" else 1
 
 restecg_option = st.selectbox(
@@ -59,6 +91,7 @@ restecg_option = st.selectbox(
         "Left Ventricular Hypertrophy"
     ]
 )
+
 restecg = {
     "Normal": 0,
     "ST-T Wave Abnormality": 1,
@@ -72,6 +105,7 @@ exang_option = st.selectbox(
         "Yes"
     ]
 )
+
 exang = 0 if exang_option == "No" else 1
 
 slope_option = st.selectbox(
@@ -82,6 +116,7 @@ slope_option = st.selectbox(
         "Downsloping"
     ]
 )
+
 slope = {
     "Upsloping": 0,
     "Flat": 1,
@@ -101,11 +136,14 @@ thal_option = st.selectbox(
         "Reversible Defect"
     ]
 )
+
 thal = {
     "Normal": 1,
     "Fixed Defect": 2,
     "Reversible Defect": 3
 }[thal_option]
+
+# ---------------- Prediction ---------------- #
 
 if st.button("🔍 Predict"):
 
@@ -139,15 +177,14 @@ if st.button("🔍 Predict"):
         "thal"
     ])
 
-prediction = model.predict(input_data)[0]
-
-if prediction == 1:
-    st.success("✅ Low Risk of Heart Disease")
-else:
-    st.error("⚠️ High Risk of Heart Disease")
-
-if hasattr(model, "predict_proba"):
+    prediction = model.predict(input_data)[0]
     probability = model.predict_proba(input_data)[0]
+
+    # Dataset: 1 = No Heart Disease, 0 = Heart Disease
+    if prediction == 1:
+        st.success("✅ Low Risk of Heart Disease")
+    else:
+        st.error("⚠️ High Risk of Heart Disease")
 
     st.write(f"**Probability of Heart Disease:** {probability[0]*100:.2f}%")
     st.write(f"**Probability of No Heart Disease:** {probability[1]*100:.2f}%")
