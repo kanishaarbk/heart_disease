@@ -139,7 +139,7 @@ if st.button("🔍 Predict"):
         "thal"
     ])
 
-    prediction = model.predict(input_data)[0]
+prediction = model.predict(input_data)[0]
 
 if prediction == 1:
     st.success("✅ Low Risk of Heart Disease")
