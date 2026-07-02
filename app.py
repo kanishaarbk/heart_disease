@@ -141,12 +141,13 @@ if st.button("🔍 Predict"):
 
     prediction = model.predict(input_data)[0]
 
-    if prediction == 1:
-        st.error("⚠️ High Risk of Heart Disease")
-    else:
-        st.success("✅ Low Risk of Heart Disease")
+if prediction == 1:
+    st.success("✅ Low Risk of Heart Disease")
+else:
+    st.error("⚠️ High Risk of Heart Disease")
 
-    if hasattr(model, "predict_proba"):
-        probability = model.predict_proba(input_data)[0]
-        st.write(f"**Probability of No Heart Disease:** {probability[0]*100:.2f}%")
-        st.write(f"**Probability of Heart Disease:** {probability[1]*100:.2f}%")
+if hasattr(model, "predict_proba"):
+    probability = model.predict_proba(input_data)[0]
+
+    st.write(f"**Probability of Heart Disease:** {probability[0]*100:.2f}%")
+    st.write(f"**Probability of No Heart Disease:** {probability[1]*100:.2f}%")
